@@ -60,10 +60,8 @@ def calculate_cost(product):
 new_unit, new_daily, new_case = calculate_cost(new_product)
 target_unit, target_daily, target_case = calculate_cost(target)
 
-# 月間コスト
+# 月間必要ケース（新エルナ）
 new_required_cases = monthly_cases * (new_product["daily_usage"] / target["daily_usage"])
-new_monthly_cost = new_required_cases * new_case
-target_monthly_cost = monthly_cases * target_case
 
 # 表示
 st.subheader("📊 1人1日あたりのコスト")
@@ -75,18 +73,19 @@ st.table(pd.DataFrame({
     "1人1日コスト (円)": [round(new_daily, 2), round(target_daily, 2)]
 }))
 
-st.subheader("📦 月間コスト比較")
-st.write(f"{target_product}：{monthly_cases:.2f}ケース × {target_case:.0f}円 = {target_monthly_cost:.0f}円")
-st.write(f"新エルナ：約{new_required_cases:.2f}ケース × {new_case:.0f}円 = {new_monthly_cost:.0f}円")
+st.subheader("📦 月間使用見込み比較")
+st.write(f"{target_product}：{monthly_cases:.2f}ケースの使用見込み")
+st.write(f"新エルナ：約{new_required_cases:.2f}ケースの使用見込み")
 
-diff = target_monthly_cost - new_monthly_cost
-rate = (diff / target_monthly_cost) * 100
+diff_cases = monthly_cases - new_required_cases
+rate = (diff_cases / monthly_cases) * 100
 
-st.success(f"差額：{diff:.0f}円（約{rate:.1f}% 削減）")
+st.success(f"差分：{diff_cases:.2f}ケース（約{rate:.1f}% 削減）")
 
-if diff > 0:
+if diff_cases > 0:
     st.markdown("✅ **新エルナはコスト削減につながります。**")
+    st.markdown("📝 使用枚数の削減により、発注回数や保管スペースの削減、交換頻度の低減にもつながります。")
 else:
-    st.markdown("⚠️ **新エルナはコスト増加となっています。使用条件をご確認ください。**")
+    st.markdown("⚠️ **新エルナは削減効果が見られません。使用条件をご確認ください。**")
 
-st.caption("ver 2.1 - 製品比較＆単価入力対応版")
+st.caption("ver 2.2 - 見込み数量表示＆効果説明付き")
