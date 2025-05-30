@@ -17,19 +17,19 @@ products = {
     "旧エルナ（エシュット）": {
         "daily_usage": 8.25,
         "pack_size": 200,
-        "price_per_pack": 72,
+        "default_price_per_pack": 72,
         "packs_per_case": 35
     },
     "26gパルプ品": {
         "daily_usage": 12.53,
         "pack_size": 200,
-        "price_per_pack": 62,
+        "default_price_per_pack": 62,
         "packs_per_case": 40
     },
     "新エルナ": {
         "daily_usage": 6.71,
         "pack_size": 200,
-        "price_per_pack": 79,
+        "default_price_per_pack": 79,
         "packs_per_case": 35
     }
 }
@@ -38,10 +38,17 @@ with st.sidebar:
     st.header("📋 比較製品を選択")
     target_product = st.selectbox("比較対象製品を選んでください", ["旧エルナ（エシュット）", "26gパルプ品"])
     monthly_cases = st.number_input("現在の出荷ケース数（月間）", value=50)
+    st.markdown("### 単価入力（200枚あたり）")
+    new_price_per_pack = st.number_input("新エルナ 単価", value=products["新エルナ"]["default_price_per_pack"])
+    target_price_per_pack = st.number_input(f"{target_product} 単価", value=products[target_product]["default_price_per_pack"])
 
 # 対象と比較元のデータ取得
-new_product = products["新エルナ"]
-target = products[target_product]
+new_product = products["新エルナ"].copy()
+target = products[target_product].copy()
+
+# 入力価格で上書き
+new_product["price_per_pack"] = new_price_per_pack
+target["price_per_pack"] = target_price_per_pack
 
 # 単価と1人1日コスト
 def calculate_cost(product):
@@ -82,4 +89,4 @@ if diff > 0:
 else:
     st.markdown("⚠️ **新エルナはコスト増加となっています。使用条件をご確認ください。**")
 
-st.caption("ver 2.0 - 製品比較対応版")
+st.caption("ver 2.1 - 製品比較＆単価入力対応版")
