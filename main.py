@@ -25,22 +25,27 @@ def load_data():
     else:
         st.error("Excelファイルが見つかりません。デスクトップに '使用量調査.xlsx' を配置してください。")
         st.stop()
+
     df_valid = df.dropna(subset=["推定使用枚数", "事務所人数"])
+    df_valid = df_valid[df_valid["事務所人数"] > 0]  # 0除算防止
+    df_valid["1人あたり使用枚数"] = df_valid["推定使用枚数"] / df_valid["事務所人数"]
+    usage_by_product = df_valid.groupby("略称")["1人あたり使用枚数"].mean().to_dict()
+
     st.caption(f"📁 使用データソース：{source}")
-    return df_valid
+    return usage_by_product
 
 try:
-    df = load_data()
+    usage_by_product = load_data()
 except Exception as e:
     st.error(f"Excelファイルの読み込み中にエラーが発生しました: {e}")
     st.stop()
 
-# 略称ごとの平均使用枚数
-usage_by_product = df.groupby("略称")["推定使用枚数"].mean().to_dict()
-
 # 入力：対象製品選択
 with st.sidebar:
     st.header("📋 比較製品を選択")
+    if not usage_by_product:
+        st.error("使用可能な略称データがありません。")
+        st.stop()
     target_product = st.selectbox("比較対象製品を選んでください", list(usage_by_product.keys()))
     monthly_cases = st.number_input("現在の出荷ケース数（月間）", value=50)
     st.markdown("### 単価入力（200枚あたり）")
@@ -102,4 +107,4 @@ else:
     st.warning(f"差額：{diff:.0f}円（約{rate:.1f}% 増加）")
     st.markdown("⚠️ **新エルナは削減効果が見られません。使用条件をご確認ください。**")
 
-st.caption("ver 3.4.2 - 数式列の対応と列名修正")
+st.caption("ver 3.6.0 - 使用枚数は推定使用枚数 ÷ 事務所人数で算出")
