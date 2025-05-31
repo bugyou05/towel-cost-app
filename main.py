@@ -10,7 +10,7 @@ st.markdown("""
 このアプリでは、Excelファイルから有効データを抽出し、
 略称ごとに平均使用枚数を元にコスト比較を行います。
 
-※ 推定使用枚数と人数の両方が揃ったデータのみ使用
+※ 推定使用枚数と事務所人数の両方が揃ったデータのみ使用
 """)
 
 # ファイルパス：デスクトップ上のファイルをフルパス指定で使用
@@ -25,7 +25,7 @@ def load_data():
     else:
         st.error("Excelファイルが見つかりません。デスクトップに '使用量調査.xlsx' を配置してください。")
         st.stop()
-    df_valid = df.dropna(subset=["推定使用枚数", "人数"])
+    df_valid = df.dropna(subset=["推定使用枚数", "事務所人数"])
     st.caption(f"📁 使用データソース：{source}")
     return df_valid
 
@@ -102,4 +102,4 @@ else:
     st.warning(f"差額：{diff:.0f}円（約{rate:.1f}% 増加）")
     st.markdown("⚠️ **新エルナは削減効果が見られません。使用条件をご確認ください。**")
 
-st.caption("ver 3.4 - デスクトップ固定フルパス版")
+st.caption("ver 3.4.1 - 列名「事務所人数」に対応")
