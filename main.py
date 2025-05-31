@@ -1,29 +1,38 @@
 import streamlit as st
 import pandas as pd
+import os
 
 st.set_page_config(page_title="紙タオル ランニングコスト比較（Excel連携）", layout="centered")
 
 st.title("🧻 紙タオル ランニングコスト比較アプリ（Excel製品連携版）")
 
 st.markdown("""
-このアプリでは、アップロードしたExcelファイルから有効データを抽出し、
+このアプリでは、Excelファイルから有効データを抽出し、
 略称ごとに平均使用枚数を元にコスト比較を行います。
 
 ※ 推定使用枚数と人数の両方が揃ったデータのみ使用
 """)
 
+# ファイルパス：デスクトップ上のファイルのみ使用
+excel_path = os.path.expanduser(r"~\Desktop\使用量調査.xlsx")
+
 # Excelファイル読み込み
 @st.cache_data
-
 def load_data():
-    df = pd.read_excel(r"Z:\\全社共有\\営業共有フォルダ\\営業業務\\データ\\使用量調査.xlsx")
+    if os.path.exists(excel_path):
+        df = pd.read_excel(excel_path)
+        source = "デスクトップ上のファイル"
+    else:
+        st.error("Excelファイルが見つかりません。デスクトップに '使用量調査.xlsx' を配置してください。")
+        st.stop()
     df_valid = df.dropna(subset=["推定使用枚数", "人数"])
+    st.caption(f"📁 使用データソース：{source}")
     return df_valid
 
 try:
     df = load_data()
-except:
-    st.error("Excelファイルの読み込みに失敗しました。パスをご確認ください。")
+except Exception as e:
+    st.error(f"Excelファイルの読み込み中にエラーが発生しました: {e}")
     st.stop()
 
 # 略称ごとの平均使用枚数
@@ -93,4 +102,4 @@ else:
     st.warning(f"差額：{diff:.0f}円（約{rate:.1f}% 増加）")
     st.markdown("⚠️ **新エルナは削減効果が見られません。使用条件をご確認ください。**")
 
-st.caption("ver 3.1 - ファイルパス固定（社内共有パス）対応")
+st.caption("ver 3.3 - デスクトップExcel固定版")
