@@ -13,8 +13,8 @@ st.markdown("""
 ※ 推定使用枚数と人数の両方が揃ったデータのみ使用
 """)
 
-# ファイルパス：デスクトップ上のファイルのみ使用
-excel_path = os.path.expanduser(r"~\Desktop\使用量調査.xlsx")
+# ファイルパス：デスクトップ上のファイルをフルパス指定で使用
+excel_path = r"C:\\Users\\bugyou05\\Desktop\\使用量調査.xlsx"
 
 # Excelファイル読み込み
 @st.cache_data
@@ -102,4 +102,4 @@ else:
     st.warning(f"差額：{diff:.0f}円（約{rate:.1f}% 増加）")
     st.markdown("⚠️ **新エルナは削減効果が見られません。使用条件をご確認ください。**")
 
-st.caption("ver 3.3 - デスクトップExcel固定版")
+st.caption("ver 3.4 - デスクトップ固定フルパス版")
