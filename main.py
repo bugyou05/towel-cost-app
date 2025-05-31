@@ -20,7 +20,7 @@ excel_path = r"C:\\Users\\bugyou05\\Desktop\\使用量調査.xlsx"
 @st.cache_data
 def load_data():
     if os.path.exists(excel_path):
-        df = pd.read_excel(excel_path)
+        df = pd.read_excel(excel_path, engine="openpyxl")
         source = "デスクトップ上のファイル"
     else:
         st.error("Excelファイルが見つかりません。デスクトップに '使用量調査.xlsx' を配置してください。")
@@ -102,4 +102,4 @@ else:
     st.warning(f"差額：{diff:.0f}円（約{rate:.1f}% 増加）")
     st.markdown("⚠️ **新エルナは削減効果が見られません。使用条件をご確認ください。**")
 
-st.caption("ver 3.4.1 - 列名「事務所人数」に対応")
+st.caption("ver 3.4.2 - 数式列の対応と列名修正")
