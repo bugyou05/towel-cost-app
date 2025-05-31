@@ -13,17 +13,17 @@ st.markdown("""
 ※ 推定使用枚数と事務所人数の両方が揃ったデータのみ使用
 """)
 
-# ファイルパス：デスクトップ上のファイルをフルパス指定で使用
-excel_path = r"C:\\Users\\bugyou05\\Desktop\\使用量調査.xlsx"
+# GitHub用：相対パスでExcelファイルを参照
+excel_path = "使用量調査.xlsx"
 
 # Excelファイル読み込み
 @st.cache_data
 def load_data():
     if os.path.exists(excel_path):
         df = pd.read_excel(excel_path, engine="openpyxl")
-        source = "デスクトップ上のファイル"
+        source = "アップロードファイル"
     else:
-        st.error("Excelファイルが見つかりません。デスクトップに '使用量調査.xlsx' を配置してください。")
+        st.error("Excelファイルが見つかりません。アプリと同じ場所に '使用量調査.xlsx' を配置してください。")
         st.stop()
 
     df_valid = df.dropna(subset=["推定使用枚数", "事務所人数"])
@@ -107,4 +107,4 @@ else:
     st.warning(f"差額：{diff:.0f}円（約{rate:.1f}% 増加）")
     st.markdown("⚠️ **新エルナは削減効果が見られません。使用条件をご確認ください。**")
 
-st.caption("ver 3.6.0 - 使用枚数は推定使用枚数 ÷ 事務所人数で算出")
+st.caption("ver 3.6.1 - GitHub対応：相対パスに修正")
